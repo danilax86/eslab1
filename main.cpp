@@ -50,6 +50,13 @@ GPIO_PinState get_n_btn_state()
 
 void play_animation(int *leds_num, int delay, int *sw_num, int *states)
 {
+    // FIND OUT HOW IT SHOULD WORK!!!!!!!!
+    // GPIO_PinState n_btn_state = GPIO_PIN_RESET;
+    // while (n_btn_state == GPIO_PIN_RESET)
+    // {
+    //     n_btn_state = get_n_btn_state();
+    // }
+
     reset_all_leds(leds_num);
     for (int i = 7; i > 0; --i)
     {
