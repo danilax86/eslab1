@@ -43,12 +43,20 @@ GPIO_PinState get_state(int *sw_num, int idx)
     return HAL_GPIO_ReadPin(GPIOE, sw_num[idx]);
 }
 
+GPIO_PinState get_n_btn_state()
+{
+    return HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_15);
+}
+
 void play_animation(int *leds_num, int delay, int *sw_num, int *states)
 {
     reset_all_leds(leds_num);
     for (int i = 7; i > 0; --i)
     {
-        if ((get_state(sw_num, 2) == states[1]) || (get_state(sw_num, 3) == states[1]))
+        if ((get_state(sw_num, 2) == states[1]) ||
+            (get_state(sw_num, 3) == states[1]) ||
+            (get_state(sw_num, 1) == states[0]) ||
+            (get_state(sw_num, 0) == states[0]))
         {
             reset_all_leds(leds_num);
             return;
@@ -61,7 +69,10 @@ void play_animation(int *leds_num, int delay, int *sw_num, int *states)
     }
     for (int i = 1; i < 6; ++i)
     {
-        if ((get_state(sw_num, 2) == states[1]) || (get_state(sw_num, 3) == states[1]))
+        if ((get_state(sw_num, 2) == states[1]) ||
+            (get_state(sw_num, 3) == states[1]) ||
+            (get_state(sw_num, 1) == states[0]) ||
+            (get_state(sw_num, 0) == states[0]))
         {
             reset_all_leds(leds_num);
             return;
@@ -120,7 +131,9 @@ int umain()
             choose_switch(i, sw_num, leds_num);
         }
 
-        if ((get_state(sw_num, 2) == states[0]) && (get_state(sw_num, 3) == states[0]))
+        if (((get_state(sw_num, 2) == states[0]) && (get_state(sw_num, 3) == states[0])) &&
+            ((get_state(sw_num, 0) == states[1]) &&
+             (get_state(sw_num, 1) == states[1])))
         {
             reset_color(yellow);
             reset_color(red);
