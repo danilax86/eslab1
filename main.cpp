@@ -80,34 +80,41 @@ void stop_animation()
     while (state == GPIO_PIN_SET)
     {
         state = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_15);
+        if (!check())
+            return;
     }
     green();
 }
 
-// TODO: fix animation -> make it runs in ONE loop -> check, btn should be after lights
 void play_animation()
 {
-    for (int i = 7; i > 0; --i)
+    int i = 7;
+    int j = 1;
+
+    while (true)
     {
-        HAL_GPIO_WritePin(GPIOD, leds_num[i], GPIO_PIN_SET);
-        HAL_GPIO_WritePin(GPIOD, leds_num[i - 1], GPIO_PIN_SET);
-        HAL_Delay(delay);
-        HAL_GPIO_WritePin(GPIOD, leds_num[i], GPIO_PIN_RESET);
-
-        if (!check())
-            return;
-
-        if (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_15) == GPIO_PIN_RESET)
-            stop_animation();
-    }
-    for (int i = 1; i < 6; ++i)
-    {
-        HAL_GPIO_WritePin(GPIOD, leds_num[i], GPIO_PIN_SET);
-        HAL_GPIO_WritePin(GPIOD, leds_num[i + 1], GPIO_PIN_SET);
-        HAL_GPIO_WritePin(GPIOD, leds_num[i - 1], GPIO_PIN_RESET);
-        HAL_Delay(delay);
-        HAL_GPIO_WritePin(GPIOD, leds_num[i], GPIO_PIN_RESET);
-
+        if (i > 0)
+        {
+            HAL_GPIO_WritePin(GPIOD, leds_num[i], GPIO_PIN_SET);
+            HAL_GPIO_WritePin(GPIOD, leds_num[i - 1], GPIO_PIN_SET);
+            HAL_Delay(delay);
+            HAL_GPIO_WritePin(GPIOD, leds_num[i], GPIO_PIN_RESET);
+            --i;
+        }
+        if (i == 0)
+        {
+            HAL_GPIO_WritePin(GPIOD, leds_num[j], GPIO_PIN_SET);
+            HAL_GPIO_WritePin(GPIOD, leds_num[j + 1], GPIO_PIN_SET);
+            HAL_GPIO_WritePin(GPIOD, leds_num[j - 1], GPIO_PIN_RESET);
+            HAL_Delay(delay);
+            HAL_GPIO_WritePin(GPIOD, leds_num[j], GPIO_PIN_RESET);
+            ++j;
+            if (j == 6)
+            {
+                i = 7;
+                j = 1;
+            }
+        }
         if (!check())
             return;
 
